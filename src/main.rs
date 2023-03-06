@@ -11,7 +11,7 @@ fn main() {
         eframe::start_web(
             "canvas",
             web_options,
-            Box::new(|cc| Box::new(gb_debug::TemplateApp::new(cc))),
+            Box::new(|cc| Box::new(gb_debug::Debugger::new(cc))),
         )
         .await
         .expect("failed to start eframe");

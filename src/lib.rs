@@ -1,2 +1,3 @@
-mod app;
-pub use app::TemplateApp;
+pub mod components;
+mod debugger;
+pub use debugger::Debugger;

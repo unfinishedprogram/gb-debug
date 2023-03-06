@@ -8,11 +8,14 @@ edition = "2021"
 [dependencies]
 egui = "0.21.0"
 eframe = { version = "0.21.0", default-features = false, features = ["wgpu"] }
-gb-core = { git = "https://github.com/unfinishedprogram/gb-core.git", branch = "main" }
+gb-core = { features = [
+    "debug",
+], git = "https://github.com/unfinishedprogram/gb-core.git", branch = "main" }
 console_error_panic_hook = "0.1.6"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
 serde = { version = "1.0.152", features = ["derive"] }
+egui_extras = "0.21.0"
 
 
 [profile.release]
