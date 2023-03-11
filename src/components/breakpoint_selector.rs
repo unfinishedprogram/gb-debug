@@ -1,5 +1,5 @@
 use egui::{ComboBox, DragValue, Response, Ui, Widget};
-use gameboy::debugger::Breakpoint;
+use gameboy::{debugger::Breakpoint, ppu::PPUMode};
 
 type GetSetValue<'a> = Box<dyn 'a + FnMut(Option<Breakpoint>) -> Option<Breakpoint>>;
 
@@ -26,17 +26,24 @@ impl<'a> BreakpointSelector<'a> {
     }
 }
 
-pub fn select_breakpoint(ui: &mut Ui, value: &mut Option<Breakpoint>) {
-    // let mut next_value: Option<Breakpoint> = None;
+pub fn select_details(ui: &mut Ui, value: &mut Option<Breakpoint>) {
     use Breakpoint::*;
-
     let Some(current) = value else { return };
 
     match current {
         Addr(addr) | ReadMem(addr) | WriteMem(addr) => {
             ui.add(DragValue::new(addr).hexadecimal(4, false, false));
         }
-        PPUEnterMode(_) => todo!(),
+        PPUEnterMode(mode) => {
+            ComboBox::from_id_source("mode")
+                .selected_text(format!("{mode:?}"))
+                .show_ui(ui, |ui| {
+                    ui.selectable_value(mode, PPUMode::Draw, "Draw");
+                    ui.selectable_value(mode, PPUMode::HBlank, "HBlank");
+                    ui.selectable_value(mode, PPUMode::VBlank, "VBlank");
+                    ui.selectable_value(mode, PPUMode::OamScan, "OamScan");
+                });
+        }
         ExecInstruction(_) => todo!(),
         PPUModeChange => todo!(),
         SpeedSwitch(_) => todo!(),
@@ -60,11 +67,17 @@ impl<'a> Widget for BreakpointSelector<'a> {
                     let mut value = (self.get_set_value)(None);
                     ui.selectable_value(&mut value, Some(Addr(0)), "Addr");
                     ui.selectable_value(&mut value, Some(ReadMem(0)), "ReadMem");
+                    ui.selectable_value(&mut value, Some(WriteMem(0)), "WriteMem");
+                    ui.selectable_value(
+                        &mut value,
+                        Some(PPUEnterMode(PPUMode::Draw)),
+                        "PPUEnterMode",
+                    );
                     (self.get_set_value)(value);
                 });
 
             let mut value = (self.get_set_value)(None);
-            select_breakpoint(ui, &mut value);
+            select_details(ui, &mut value);
             (self.get_set_value)(value);
         })
         .response
