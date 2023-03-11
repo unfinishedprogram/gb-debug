@@ -1,7 +1,7 @@
 use egui::{CentralPanel, SidePanel, TopBottomPanel};
 use gameboy::Gameboy;
 
-use crate::components::{Logs, Screen};
+use crate::components::{BreakpointManager, Logs, Screen};
 
 #[derive(Default)]
 pub enum RunningState {
@@ -15,6 +15,7 @@ pub struct Debugger {
     gameboy: Gameboy,
     screen: Screen,
     running_state: RunningState,
+    breakpoint_manager: BreakpointManager,
 }
 
 impl Debugger {
@@ -48,6 +49,11 @@ impl eframe::App for Debugger {
         });
 
         CentralPanel::default().show(ctx, |ui| self.screen.draw(ui, screen_buffer));
-        SidePanel::right("right").show(ctx, Logs::draw);
+        SidePanel::right("right").show(ctx, |ui| {
+            Logs::draw(ui);
+            self.breakpoint_manager.draw(ui);
+        });
+
+        ctx.request_repaint();
     }
 }
