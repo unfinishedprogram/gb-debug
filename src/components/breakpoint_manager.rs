@@ -30,7 +30,6 @@ impl BreakpointManager {
         }
 
         if self.add_breakpoint_open.is_some() {
-            // egui::Window::new("add breakpoint").show(ui.ctx(), |ui| {
             if let Some(menu) = self.add_breakpoint_open.as_mut() {
                 let breakpoint_selector = BreakpointSelector::new(&mut menu.breakpoint);
                 ui.add(breakpoint_selector);
@@ -45,7 +44,6 @@ impl BreakpointManager {
                     debugger.add_breakpoint(breakpoint);
                 }
             }
-            // });
         }
     }
 }
