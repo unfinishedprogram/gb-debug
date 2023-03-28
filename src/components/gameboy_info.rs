@@ -47,10 +47,6 @@ pub fn show_gameboy_info(gb: &Gameboy, ui: &mut Ui) {
                 ui.monospace(format!("N:{}", if cpu.get_flag(N) { "⬛" } else { "⬜" }));
                 ui.monospace(format!("H:{}", if cpu.get_flag(H) { "⬛" } else { "⬜" }));
                 ui.monospace(format!("C:{}", if cpu.get_flag(C) { "⬛" } else { "⬜" }));
-                // ui.checkbox(&mut cpu.get_flag(Z), "Z");
-                // ui.checkbox(&mut cpu.get_flag(N), "N");
-                // ui.checkbox(&mut cpu.get_flag(H), "H");
-                // ui.checkbox(&mut cpu.get_flag(C), "C");
             })
         });
     });
