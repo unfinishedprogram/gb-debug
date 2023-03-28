@@ -1,7 +1,7 @@
-use std::str::{from_utf8, from_utf8_unchecked};
+use std::str::from_utf8;
 
 use egui::style::Spacing;
-use egui::{RichText, Style, Ui, Vec2, WidgetText};
+use egui::{RichText, Style, Ui, Vec2};
 use egui_extras::{Column, TableBuilder};
 use gameboy::gb_sm83::memory_mapper::MemoryMapper;
 use gameboy::Gameboy;

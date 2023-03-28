@@ -2,6 +2,7 @@ use egui::{CentralPanel, SidePanel, Style, TextStyle, TopBottomPanel, Window};
 use gameboy::Gameboy;
 
 use crate::components::{
+    code_view,
     run_controller::{self, RunController},
     show_gameboy_info, BreakpointManager, Logs, MemoryView, Screen,
 };
@@ -38,11 +39,16 @@ impl eframe::App for Debugger {
         });
         let screen_buffer = self.gameboy.ppu.lcd.front_buffer();
 
-        CentralPanel::default().show(ctx, |ui| self.screen.draw(ui, screen_buffer));
         SidePanel::right("right").show(ctx, |ui| {
             Logs::draw(ui);
             self.breakpoint_manager.draw(ui);
         });
+
+        SidePanel::left("instructions").show(ctx, |ui| {
+            code_view(&self.gameboy, ui);
+        });
+
+        CentralPanel::default().show(ctx, |ui| self.screen.draw(ui, screen_buffer));
 
         Window::new("Memory")
             .resizable(true)
