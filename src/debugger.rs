@@ -1,9 +1,9 @@
-use egui::{CentralPanel, SidePanel, TopBottomPanel};
+use egui::{CentralPanel, SidePanel, TopBottomPanel, Window};
 use gameboy::Gameboy;
 
 use crate::components::{
     run_controller::{self, RunController},
-    BreakpointManager, Logs, Screen,
+    show_gameboy_info, BreakpointManager, Logs, Screen,
 };
 
 #[derive(Default)]
@@ -37,6 +37,8 @@ impl eframe::App for Debugger {
             Logs::draw(ui);
             self.breakpoint_manager.draw(ui);
         });
+
+        Window::new("CPU State").show(ctx, |ui| show_gameboy_info(&self.gameboy, ui));
 
         ctx.request_repaint();
     }
