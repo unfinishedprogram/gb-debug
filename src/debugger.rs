@@ -2,9 +2,8 @@ use egui::{CentralPanel, SidePanel, Style, TextStyle, TopBottomPanel, Window};
 use gameboy::Gameboy;
 
 use crate::components::{
-    code_view,
     run_controller::{self, RunController},
-    show_gameboy_info, BreakpointManager, Logs, MemoryView, Screen,
+    show_gameboy_info, BreakpointManager, LinearMemoryView, Logs, Screen,
 };
 
 #[derive(Default)]
@@ -13,7 +12,7 @@ pub struct Debugger {
     screen: Screen,
     breakpoint_manager: BreakpointManager,
     run_controller: RunController,
-    memory_view: MemoryView,
+    linear_memory_view: LinearMemoryView,
 }
 
 impl Debugger {
@@ -44,15 +43,12 @@ impl eframe::App for Debugger {
             self.breakpoint_manager.draw(ui);
         });
 
-        SidePanel::left("instructions").show(ctx, |ui| {
-            code_view(&self.gameboy, ui);
-        });
-
         CentralPanel::default().show(ctx, |ui| self.screen.draw(ui, screen_buffer));
 
         Window::new("Memory")
             .resizable(true)
-            .show(ctx, |ui| self.memory_view.draw(&self.gameboy, ui));
+            .show(ctx, |ui| self.linear_memory_view.draw(&self.gameboy, ui));
+
         Window::new("CPU State").show(ctx, |ui| show_gameboy_info(&self.gameboy, ui));
 
         ctx.request_repaint();

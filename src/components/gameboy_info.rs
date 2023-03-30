@@ -28,19 +28,19 @@ pub fn show_gameboy_info(gb: &Gameboy, ui: &mut Ui) {
 
             ui.monospace(format!(
                 "AF:{:04x}",
-                u16::from_be_bytes([r.bytes[5], r.bytes[0]])
+                u16::from_le_bytes([r.bytes[5], r.bytes[0]])
             ));
             ui.monospace(format!(
                 "BC:{:04x}",
-                u16::from_be_bytes([r.bytes[2], r.bytes[1]])
+                u16::from_le_bytes([r.bytes[2], r.bytes[1]])
             ));
             ui.monospace(format!(
                 "DE:{:04x}",
-                u16::from_be_bytes([r.bytes[4], r.bytes[3]])
+                u16::from_le_bytes([r.bytes[4], r.bytes[3]])
             ));
             ui.monospace(format!(
                 "HL:{:04x}",
-                u16::from_be_bytes([r.bytes[7], r.bytes[6]])
+                u16::from_le_bytes([r.bytes[7], r.bytes[6]])
             ));
             ui.horizontal(|ui| {
                 ui.monospace(format!("Z:{}", if cpu.get_flag(Z) { "⬛" } else { "⬜" }));
