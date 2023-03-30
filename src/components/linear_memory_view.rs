@@ -1,5 +1,5 @@
 use egui::style::Spacing;
-use egui::{Align, Color32, Frame, Rgba, Style, Ui, Vec2};
+use egui::{Align, Rgba, Style, Ui, Vec2};
 use egui_extras::{Column, TableBuilder};
 use gameboy::gb_sm83::instruction::Instruction;
 use gameboy::gb_sm83::SM83;
@@ -7,7 +7,6 @@ use gameboy::Gameboy;
 
 #[derive(Default)]
 pub struct LinearMemoryView {
-    selected: Option<u16>,
     instructions: Option<Vec<(u16, Instruction)>>,
     keep_pc_in_view: bool,
 }
