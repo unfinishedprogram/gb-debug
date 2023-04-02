@@ -50,4 +50,14 @@ pub fn show_gameboy_info(gb: &Gameboy, ui: &mut Ui) {
             })
         });
     });
+    ui.separator();
+    ui.monospace(format!("Halted:{}", if cpu.halted { "⬛" } else { "⬜" }));
+    let ime = cpu.interrupt_master_enable;
+    let ie = cpu.interrupt_enable;
+    let ir = cpu.interrupt_request;
+    ui.monospace(format!("IME:{}", if ime { "⬛" } else { "⬜" }));
+    ui.monospace(format!("IE:{ie:08b}",));
+    ui.monospace(format!("IR:{ir:08b}",));
+
+    ui.monospace(format!("Booting:{}", if gb.booting { "⬛" } else { "⬜" }));
 }

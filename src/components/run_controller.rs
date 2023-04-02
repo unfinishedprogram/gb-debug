@@ -35,14 +35,19 @@ impl RunController {
                 }
             }
 
+            let mut action: Option<Action> = None;
+
             if ui.button("⏵").on_hover_text("Single Step").clicked() {
-                return Some(Action::StepSingle);
+                action = Some(Action::StepSingle);
             }
 
             if ui.button("⏩").on_hover_text("Step Frame").clicked() {
-                return Some(Action::StepFrame);
+                action = Some(Action::StepFrame);
             }
 
+            if action.is_some() {
+                return action;
+            }
             match self.state {
                 RunningState::Paused => None,
                 RunningState::Broke => None,

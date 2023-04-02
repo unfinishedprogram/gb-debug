@@ -36,10 +36,11 @@ impl eframe::App for Debugger {
                     Some(Action::StepFrame) => self.gameboy.step_single_frame(),
                     Some(Action::StepSingle) => self.gameboy.step(),
                     None => {}
-                }
+                };
                 self.rom_loader.draw(ui, &mut self.gameboy)
             });
         });
+
         let screen_buffer = self.gameboy.ppu.lcd.front_buffer();
 
         SidePanel::right("right").show(ctx, |ui| {
