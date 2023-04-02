@@ -3,7 +3,7 @@ use gameboy::Gameboy;
 
 use crate::components::{
     run_controller::{self, RunController},
-    show_gameboy_info, BreakpointManager, LinearMemoryView, Logs, Screen,
+    show_gameboy_info, BreakpointManager, LinearMemoryView, Logs, RomLoader, Screen,
 };
 
 #[derive(Default)]
@@ -13,6 +13,7 @@ pub struct Debugger {
     breakpoint_manager: BreakpointManager,
     run_controller: RunController,
     linear_memory_view: LinearMemoryView,
+    rom_loader: RomLoader,
 }
 
 impl Debugger {
@@ -29,12 +30,15 @@ impl eframe::App for Debugger {
         });
 
         TopBottomPanel::top("top").show(ctx, |ui| {
-            use run_controller::Action;
-            match self.run_controller.draw(ui) {
-                Some(Action::StepFrame) => self.gameboy.step_single_frame(),
-                Some(Action::StepSingle) => self.gameboy.step(),
-                None => {}
-            }
+            ui.horizontal(|ui| {
+                use run_controller::Action;
+                match self.run_controller.draw(ui) {
+                    Some(Action::StepFrame) => self.gameboy.step_single_frame(),
+                    Some(Action::StepSingle) => self.gameboy.step(),
+                    None => {}
+                }
+                self.rom_loader.draw(ui, &mut self.gameboy)
+            });
         });
         let screen_buffer = self.gameboy.ppu.lcd.front_buffer();
 

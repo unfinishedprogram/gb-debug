@@ -16,10 +16,16 @@ tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
 serde = { version = "1.0.152", features = ["derive"] }
 egui_extras = "0.21.0"
+ehttp = "0.2.0"
+
+[dependencies.poll-promise]
+version = "0.2.0"
+features = ["wasm-bindgen", "web"]
 
 
 [profile.release]
-opt-level = 2 # fast and small wasm
+lto = true
+opt-level = 2
 
 # Optimize all dependencies even in debug builds:
 [profile.dev.package."*"]
