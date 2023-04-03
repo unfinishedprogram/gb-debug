@@ -4,7 +4,7 @@ use gameboy::Gameboy;
 
 use crate::bool;
 
-pub fn show_gameboy_info(gb: &Gameboy, ui: &mut Ui) {
+pub fn show_cpu_info(gb: &Gameboy, ui: &mut Ui) {
     let cpu = &gb.cpu_state;
     let r = &cpu.registers;
 

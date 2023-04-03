@@ -3,7 +3,7 @@ use gameboy::Gameboy;
 
 use crate::components::{
     run_controller::{self, RunController},
-    show_gameboy_info, show_ppu_info, BreakpointManager, LinearMemoryView, Logs, RomLoader, Screen,
+    show_cpu_info, show_ppu_info, BreakpointManager, LinearMemoryView, Logs, RomLoader, Screen,
 };
 
 #[derive(Default)]
@@ -51,7 +51,7 @@ impl eframe::App for Debugger {
         CentralPanel::default().show(ctx, |ui| self.screen.draw(ui, screen_buffer));
 
         Window::new("Memory").show(ctx, |ui| self.linear_memory_view.draw(&self.gameboy, ui));
-        Window::new("CPU State").show(ctx, |ui| show_gameboy_info(&self.gameboy, ui));
+        Window::new("CPU State").show(ctx, |ui| show_cpu_info(&self.gameboy, ui));
         Window::new("PPU State").show(ctx, |ui| show_ppu_info(&self.gameboy, ui));
 
         ctx.request_repaint();

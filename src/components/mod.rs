@@ -1,6 +1,6 @@
 mod breakpoint_manager;
 mod breakpoint_selector;
-mod gameboy_info;
+mod cpu_info;
 mod linear_memory_view;
 mod logs;
 mod macro_helpers;
@@ -11,7 +11,7 @@ pub mod run_controller;
 mod screen;
 
 pub use breakpoint_manager::BreakpointManager;
-pub use gameboy_info::show_gameboy_info;
+pub use cpu_info::show_cpu_info;
 pub use linear_memory_view::LinearMemoryView;
 pub use logs::Logs;
 pub use memory_view::MemoryView;
