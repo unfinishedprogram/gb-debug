@@ -2,62 +2,51 @@ use egui::Ui;
 use gameboy::gb_sm83::flags::{cpu::*, Flags};
 use gameboy::Gameboy;
 
+use crate::bool;
+
 pub fn show_gameboy_info(gb: &Gameboy, ui: &mut Ui) {
     let cpu = &gb.cpu_state;
     let r = &cpu.registers;
 
+    use gameboy::gb_sm83::registers::CPURegister16::*;
+
     ui.horizontal(|ui| {
         ui.vertical(|ui| {
-            ui.monospace(format!("A:{:02x}", r.bytes[0]));
-            ui.monospace(format!("B:{:02x}", r.bytes[1]));
-            ui.monospace(format!("C:{:02x}", r.bytes[2]));
-            ui.monospace(format!("D:{:02x}", r.bytes[3]));
-            ui.monospace(format!("E:{:02x}", r.bytes[4]));
-            ui.monospace(format!("F:{:02x}", r.bytes[5]));
-            ui.monospace(format!("H:{:02x}", r.bytes[6]));
-            ui.monospace(format!("L:{:02x}", r.bytes[7]));
+            ui.label(format!("A:{:02x}", r.bytes[0]));
+            ui.label(format!("B:{:02x}", r.bytes[1]));
+            ui.label(format!("C:{:02x}", r.bytes[2]));
+            ui.label(format!("D:{:02x}", r.bytes[3]));
+            ui.label(format!("E:{:02x}", r.bytes[4]));
+            ui.label(format!("F:{:02x}", r.bytes[5]));
+            ui.label(format!("H:{:02x}", r.bytes[6]));
+            ui.label(format!("L:{:02x}", r.bytes[7]));
         });
 
         ui.separator();
 
         ui.vertical(|ui| {
-            ui.monospace(format!("PC:{:04x}", r.pc));
-            ui.monospace(format!("SP:{:04x}", r.sp));
+            ui.label(format!("PC:{:04x}", r.pc));
+            ui.label(format!("SP:{:04x}", r.sp));
 
             ui.separator();
 
-            ui.monospace(format!(
-                "AF:{:04x}",
-                u16::from_le_bytes([r.bytes[5], r.bytes[0]])
-            ));
-            ui.monospace(format!(
-                "BC:{:04x}",
-                u16::from_le_bytes([r.bytes[2], r.bytes[1]])
-            ));
-            ui.monospace(format!(
-                "DE:{:04x}",
-                u16::from_le_bytes([r.bytes[4], r.bytes[3]])
-            ));
-            ui.monospace(format!(
-                "HL:{:04x}",
-                u16::from_le_bytes([r.bytes[7], r.bytes[6]])
-            ));
+            ui.label(format!("AF:{:04x}", r.get_u16(AF)));
+            ui.label(format!("BC:{:04x}", r.get_u16(BC)));
+            ui.label(format!("DE:{:04x}", r.get_u16(DE)));
+            ui.label(format!("HL:{:04x}", r.get_u16(HL)));
+
             ui.horizontal(|ui| {
-                ui.monospace(format!("Z:{}", if cpu.get_flag(Z) { "⬛" } else { "⬜" }));
-                ui.monospace(format!("N:{}", if cpu.get_flag(N) { "⬛" } else { "⬜" }));
-                ui.monospace(format!("H:{}", if cpu.get_flag(H) { "⬛" } else { "⬜" }));
-                ui.monospace(format!("C:{}", if cpu.get_flag(C) { "⬛" } else { "⬜" }));
+                ui.label(bool!("Z:{}", cpu.get_flag(Z)));
+                ui.label(bool!("N:{}", cpu.get_flag(N)));
+                ui.label(bool!("H:{}", cpu.get_flag(H)));
+                ui.label(bool!("C:{}", cpu.get_flag(C)));
             })
         });
     });
     ui.separator();
-    ui.monospace(format!("Halted:{}", if cpu.halted { "⬛" } else { "⬜" }));
-    let ime = cpu.interrupt_master_enable;
-    let ie = cpu.interrupt_enable;
-    let ir = cpu.interrupt_request;
-    ui.monospace(format!("IME:{}", if ime { "⬛" } else { "⬜" }));
-    ui.monospace(format!("IE:{ie:08b}",));
-    ui.monospace(format!("IR:{ir:08b}",));
-
-    ui.monospace(format!("Booting:{}", if gb.booting { "⬛" } else { "⬜" }));
+    ui.label(bool!("Halted:{}", cpu.halted));
+    ui.label(bool!("IME:{}", cpu.interrupt_master_enable));
+    ui.label(format!("IE:{:08b}", cpu.interrupt_enable));
+    ui.label(format!("IR:{:08b}", cpu.interrupt_request));
+    ui.label(bool!("Booting:{}", gb.booting));
 }
