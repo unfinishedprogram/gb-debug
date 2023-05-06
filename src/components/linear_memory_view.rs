@@ -2,21 +2,38 @@ use egui::style::Spacing;
 use egui::{Align, Rgba, Style, Ui, Vec2};
 use egui_extras::{Column, TableBuilder};
 use gameboy::gb_sm83::instruction::Instruction;
+use gameboy::gb_sm83::memory_mapper::MemoryMapper;
 use gameboy::gb_sm83::SM83;
 use gameboy::Gameboy;
 
+use crate::memory_map::get_addr_info;
+
+type CompiledEntry = (u16, Instruction, String);
+
 #[derive(Default)]
 pub struct LinearMemoryView {
-    instructions: Option<Vec<(u16, Instruction)>>,
+    instructions: Option<Vec<CompiledEntry>>,
     keep_pc_in_view: bool,
 }
 
-pub fn generate_instructions(gb: &Gameboy) -> Vec<(u16, Instruction)> {
+pub fn generate_instructions(gb: &Gameboy) -> Vec<CompiledEntry> {
     let mut gb = gb.clone();
+
     let mut instructions = vec![];
 
+    gb.cpu_state.registers.pc = 0;
     while gb.cpu_state.registers.pc < 0xFFFF {
-        instructions.push((gb.cpu_state.registers.pc, gb.fetch_next_instruction()));
+        let pc = gb.cpu_state.registers.pc;
+        let instruction = gb.fetch_next_instruction();
+        let mut bytes = vec![];
+        let new_pc = gb.cpu_state.registers.pc;
+
+        for addr in pc..new_pc {
+            bytes.push(format!("{:02X}", gb.read(addr)));
+        }
+        let bytes = bytes.join(", ");
+
+        instructions.push((pc, instruction, bytes));
     }
 
     instructions
@@ -51,7 +68,7 @@ impl LinearMemoryView {
         ui.separator();
 
         let mut row = 0;
-        for (index, (addr, _)) in instructions.iter().enumerate() {
+        for (index, (addr, _, _)) in instructions.iter().enumerate() {
             if addr >= &pc {
                 row = index;
                 break;
@@ -66,16 +83,14 @@ impl LinearMemoryView {
         .striped(true)
         .resizable(true)
         .column(Column::exact(40.0))
-        .column(Column::remainder().resizable(true))
+        .column(Column::remainder())
+        .column(Column::remainder())
+        .column(Column::remainder())
         .vscroll(true)
         .body(|body| {
             body.rows(20.0, instructions.len(), |index, mut row| {
-                let (addr, inst) = &instructions[index];
-                let color = if pc == *addr {
-                    Rgba::from_rgb(1.0, 0.0, 0.0)
-                } else {
-                    Rgba::from_rgb(0.5, 0.5, 0.5)
-                };
+                let (addr, inst, bytes) = &instructions[index];
+                let color = if pc == *addr { Rgba::RED } else { Rgba::WHITE };
 
                 row.col(|ui| {
                     ui.colored_label(color, format!("{addr:04X}"));
@@ -83,6 +98,14 @@ impl LinearMemoryView {
 
                 row.col(|ui| {
                     ui.colored_label(color, format!("{:?}", inst));
+                });
+
+                row.col(|ui| {
+                    ui.colored_label(color, bytes);
+                });
+
+                row.col(|ui| {
+                    ui.colored_label(color, format!("{:?}", get_addr_info(*addr).0));
                 });
             });
         });
